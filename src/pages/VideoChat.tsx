@@ -4,12 +4,10 @@ import { useNavigate } from 'react-router-dom';
 import { useVideoChat } from '@/hooks/useVideoChat';
 import VideoDisplay from '@/components/VideoDisplay';
 import CallControls from '@/components/CallControls';
-import { Button } from '@/components/ui/button';
 import { 
   ShieldCheck, 
-  Video as VideoIcon, 
-  User,
-  AlertTriangle
+  AlertTriangle,
+  User
 } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
@@ -46,25 +44,23 @@ const VideoChat: React.FC = () => {
     }
   }, [error, navigate]);
 
-  // Two-person layout
+  // Main video layout - only showing the remote video
   const VideoLayout = () => (
-    <div className="flex flex-col md:flex-row gap-4 w-full h-full max-w-6xl mx-auto p-4">
-      {/* Local video - smaller on desktop, full width on mobile */}
-      <div className="md:w-1/3 w-full h-[30vh] md:h-auto">
-        <VideoDisplay
-          stream={localStream}
-          isMuted={true}
-          isLocal={true}
-          className="w-full h-full rounded-xl shadow-lg"
-        />
-      </div>
-      
-      {/* Remote video - larger on desktop, full width on mobile */}
-      <div className="md:w-2/3 w-full h-[50vh] md:h-auto relative">
-        <VideoDisplay
-          stream={remoteStream}
-          className="w-full h-full rounded-xl shadow-lg"
-        />
+    <div className="flex flex-col w-full h-full max-w-6xl mx-auto p-4">
+      {/* Only show remote video */}
+      <div className="w-full h-[80vh] relative">
+        {remoteStream ? (
+          <VideoDisplay
+            stream={remoteStream}
+            className="w-full h-full rounded-xl shadow-lg"
+          />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center bg-black/5 rounded-xl">
+            <div className="text-muted-foreground text-center p-6">
+              {isConnected ? "Waiting for other person's camera..." : "Waiting for someone to join..."}
+            </div>
+          </div>
+        )}
         
         {isConnected && (
           <div className="absolute top-3 right-3">
