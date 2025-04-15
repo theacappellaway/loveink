@@ -88,6 +88,10 @@
     --sidebar-border: 240 3.7% 15.9%;
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
+
+  html, body, #root {
+    @apply h-full;
+  }
 }
 
 @layer base {
@@ -97,5 +101,31 @@
 
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+@layer components {
+  .duet-secure-indicator {
+    @apply inline-flex items-center gap-1 text-xs font-medium py-1 px-2 rounded bg-duet-secure/10 text-duet-secure animate-pulse-secure;
+  }
+  
+  .duet-warning-indicator {
+    @apply inline-flex items-center gap-1 text-xs font-medium py-1 px-2 rounded bg-duet-warning/10 text-duet-warning;
+  }
+  
+  .duet-error-indicator {
+    @apply inline-flex items-center gap-1 text-xs font-medium py-1 px-2 rounded bg-duet-error/10 text-duet-error;
+  }
+  
+  .duet-btn {
+    @apply flex items-center justify-center h-10 w-10 rounded-full bg-duet-primary text-white hover:bg-duet-secondary transition-colors;
+  }
+  
+  .duet-btn-active {
+    @apply bg-duet-tertiary;
+  }
+  
+  .duet-gradient-bg {
+    @apply bg-gradient-to-r from-duet-primary to-duet-tertiary;
   }
 }
