@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -63,11 +64,11 @@ export default {
 					ring: 'hsl(var(--sidebar-ring))'
 				},
 				duet: {
-					primary: '#9b87f5',
-					secondary: '#7E69AB',
-					tertiary: '#6E59A5',
+					primary: '#f472b6',
+					secondary: '#fb7185',
+					tertiary: '#f43f5e',
 					dark: '#1A1F2C',
-					light: '#D6BCFA',
+					light: '#fce7f3',
 					secure: '#4ADE80',
 					warning: '#F97316',
 					error: '#F43F5E'
@@ -98,15 +99,21 @@ export default {
 				'pulse-secure': {
 					'0%, 100%': { opacity: '1' },
 					'50%': { opacity: '0.5' }
+				},
+				'heart-beat': {
+					'0%, 100%': { transform: 'scale(1)' },
+					'50%': { transform: 'scale(1.1)' }
 				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
 				'accordion-up': 'accordion-up 0.2s ease-out',
-				'pulse-secure': 'pulse-secure 2s cubic-bezier(0.4, 0, 0.6, 1) infinite'
+				'pulse-secure': 'pulse-secure 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+				'heart-beat': 'heart-beat 1.5s ease-in-out infinite'
 			},
 			backgroundImage: {
-				'gradient-duet': 'linear-gradient(to right, #9b87f5, #6E59A5)'
+				'gradient-duet': 'linear-gradient(to right, #f472b6, #f43f5e)',
+				'gradient-love': 'linear-gradient(to right, #fb7185, #f43f5e)'
 			}
 		}
 	},

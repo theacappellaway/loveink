@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -13,24 +14,24 @@
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
 
-    --primary: 222.2 47.4% 11.2%;
+    --primary: 354 100% 66%;
     --primary-foreground: 210 40% 98%;
 
-    --secondary: 210 40% 96.1%;
+    --secondary: 350 69% 95%;
     --secondary-foreground: 222.2 47.4% 11.2%;
 
-    --muted: 210 40% 96.1%;
+    --muted: 350 69% 95%;
     --muted-foreground: 215.4 16.3% 46.9%;
 
-    --accent: 210 40% 96.1%;
+    --accent: 350 69% 95%;
     --accent-foreground: 222.2 47.4% 11.2%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    --border: 350 69% 90%;
+    --input: 350 69% 90%;
+    --ring: 354 100% 66%;
 
     --radius: 0.5rem;
 
@@ -61,7 +62,7 @@
     --popover: 222.2 84% 4.9%;
     --popover-foreground: 210 40% 98%;
 
-    --primary: 210 40% 98%;
+    --primary: 354 100% 66%;
     --primary-foreground: 222.2 47.4% 11.2%;
 
     --secondary: 217.2 32.6% 17.5%;
@@ -118,14 +119,14 @@
   }
   
   .duet-btn {
-    @apply flex items-center justify-center h-10 w-10 rounded-full bg-duet-primary text-white hover:bg-duet-secondary transition-colors;
+    @apply flex items-center justify-center h-10 w-10 rounded-full bg-rose-500 text-white hover:bg-rose-600 transition-colors;
   }
   
   .duet-btn-active {
-    @apply bg-duet-tertiary;
+    @apply bg-rose-700;
   }
   
   .duet-gradient-bg {
-    @apply bg-gradient-to-r from-duet-primary to-duet-tertiary;
+    @apply bg-gradient-to-r from-pink-400 to-rose-500;
   }
 }
