@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -13,7 +14,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 
 // Get authorized emails and password from environment variables
 const AUTHORIZED_EMAILS = JSON.parse(import.meta.env.VITE_AUTHORIZED_EMAILS || '[]');
-const SECRET_PASSWORD = import.meta.env.VITE_SECRET_PASSWORD || '';
+const SECRET_PASSWORD = import.meta.env.VITE_SECRET_PASSWORD || 'love2025';
 
 const formSchema = z.object({
   email: z.string().email()
