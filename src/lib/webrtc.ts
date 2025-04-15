@@ -35,55 +35,78 @@ export const createPeer = (
   onClose: () => void,
   onError: (err: Error) => void
 ): void => {
+  console.log('Creating peer, initiator:', initiator);
+  
   // Close any existing connection
   if (currentConnection) {
+    console.log('Closing existing peer connection before creating new one');
     currentConnection.peer.destroy();
     currentConnection = null;
   }
 
   // Create a new peer connection
-  const peer = new SimplePeer({
-    initiator,
-    stream,
-    trickle: false, // Disable trickle ICE for simplicity
-    config: {
-      iceServers: [
-        { urls: 'stun:stun.l.google.com:19302' },
-        { urls: 'stun:stun1.l.google.com:19302' },
-      ]
-    }
-  });
+  try {
+    const peer = new SimplePeer({
+      initiator,
+      stream,
+      trickle: false, // Disable trickle ICE for simplicity
+      config: {
+        iceServers: [
+          { urls: 'stun:stun.l.google.com:19302' },
+          { urls: 'stun:stun1.l.google.com:19302' },
+          { urls: 'stun:stun2.l.google.com:19302' },
+          { urls: 'stun:stun3.l.google.com:19302' },
+          { urls: 'stun:stun4.l.google.com:19302' },
+        ]
+      }
+    });
 
-  currentConnection = {
-    peer,
-    isSecure: false,
-    isCaller: initiator
-  };
+    console.log('SimplePeer instance created successfully');
+    
+    currentConnection = {
+      peer,
+      isSecure: false,
+      isCaller: initiator
+    };
 
-  peer.on('signal', (data) => {
-    // Encrypt the signaling data before sending
-    const encryptedSignal = encryptSignal(JSON.stringify(data));
-    onSignal(encryptedSignal);
-  });
+    peer.on('signal', (data) => {
+      console.log('Signal event received from peer:', initiator ? 'initiator' : 'participant');
+      // Encrypt the signaling data before sending
+      const encryptedSignal = encryptSignal(JSON.stringify(data));
+      onSignal(encryptedSignal);
+    });
 
-  peer.on('connect', () => {
-    currentConnection!.isSecure = true;
-    onConnect();
-  });
+    peer.on('connect', () => {
+      console.log('Peer connection established');
+      currentConnection!.isSecure = true;
+      onConnect();
+    });
 
-  peer.on('stream', (remoteStream) => {
-    onStream(remoteStream);
-  });
+    peer.on('stream', (remoteStream) => {
+      console.log('Remote stream received');
+      onStream(remoteStream);
+    });
 
-  peer.on('close', () => {
-    currentConnection = null;
-    onClose();
-  });
+    peer.on('close', () => {
+      console.log('Peer connection closed');
+      currentConnection = null;
+      onClose();
+    });
 
-  peer.on('error', (err) => {
-    onError(err);
-    currentConnection = null;
-  });
+    peer.on('error', (err) => {
+      console.error('Peer connection error:', err);
+      onError(err);
+      currentConnection = null;
+    });
+    
+    // Debug ice connection state changes
+    peer._pc.addEventListener('iceconnectionstatechange', () => {
+      console.log('ICE connection state:', peer._pc.iceConnectionState);
+    });
+  } catch (error) {
+    console.error('Error creating peer:', error);
+    onError(error instanceof Error ? error : new Error('Failed to create peer connection'));
+  }
 };
 
 export const connectToPeer = (signal: string): void => {
@@ -93,9 +116,11 @@ export const connectToPeer = (signal: string): void => {
   }
 
   try {
+    console.log('Connecting to peer with signal data');
     // Decrypt the incoming signal
     const decryptedSignal = decryptSignal(signal);
     const signalData = JSON.parse(decryptedSignal);
+    console.log('Signal data parsed successfully, sending to peer');
     currentConnection.peer.signal(signalData);
   } catch (error) {
     console.error('Failed to connect to peer:', error);
@@ -104,6 +129,7 @@ export const connectToPeer = (signal: string): void => {
 
 export const destroyPeer = (): void => {
   if (currentConnection) {
+    console.log('Destroying peer connection');
     currentConnection.peer.destroy();
     currentConnection = null;
   }

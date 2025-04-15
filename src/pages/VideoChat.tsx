@@ -1,5 +1,5 @@
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useVideoChat } from '@/hooks/useVideoChat';
 import VideoDisplay from '@/components/VideoDisplay';
@@ -8,9 +8,13 @@ import {
   ShieldCheck, 
   AlertTriangle,
   User,
-  Heart
+  Heart,
+  Code
 } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
 const VideoChat: React.FC = () => {
   const navigate = useNavigate();
@@ -23,13 +27,18 @@ const VideoChat: React.FC = () => {
     isSecure,
     roomId,
     isCaller,
+    signalData,
     error,
     toggleAudio,
     toggleVideo,
     startCall,
     endCall,
+    connectWithSignal,
     initializePeer
   } = useVideoChat();
+  
+  const [manualSignal, setManualSignal] = useState("");
+  const [showConnectionCode, setShowConnectionCode] = useState(false);
 
   // Check authorization
   useEffect(() => {
@@ -41,10 +50,29 @@ const VideoChat: React.FC = () => {
 
   // Initialize peer connection when necessary
   useEffect(() => {
-    if (roomId) {
+    console.log('VideoChat component: localStream available:', !!localStream, 'roomId:', roomId);
+    if (localStream && roomId) {
+      console.log('Initializing peer connection from VideoChat component');
       initializePeer();
+    } else if (localStream && !roomId) {
+      console.log('Starting new call since no roomId is available');
+      startCall();
     }
-  }, [roomId, localStream, initializePeer]);
+  }, [roomId, localStream, initializePeer, startCall]);
+
+  // Handle manual connection code entry
+  const handleManualConnect = () => {
+    if (manualSignal.trim()) {
+      connectWithSignal(manualSignal.trim());
+    }
+  };
+
+  // Copy connection code to clipboard
+  const copyConnectionCode = () => {
+    if (signalData) {
+      navigator.clipboard.writeText(signalData);
+    }
+  };
 
   // Redirect if user denies camera/mic permissions
   useEffect(() => {
@@ -53,10 +81,9 @@ const VideoChat: React.FC = () => {
     }
   }, [error, navigate]);
 
-  // Main video layout - only showing the remote video
+  // Main video layout
   const VideoLayout = () => (
     <div className="flex flex-col w-full h-full max-w-6xl mx-auto p-4">
-      {/* Only show remote video */}
       <div className="w-full h-[80vh] relative rounded-xl overflow-hidden border-4 border-pink-200">
         {remoteStream ? (
           <VideoDisplay
@@ -73,6 +100,55 @@ const VideoChat: React.FC = () => {
               <p className="text-rose-400 mt-2 max-w-md mx-auto">
                 Share this link with your partner to start your private conversation
               </p>
+              
+              {!isConnected && (
+                <Button 
+                  variant="outline" 
+                  className="mt-4 border-rose-200 text-rose-500 hover:bg-rose-50"
+                  onClick={() => setShowConnectionCode(!showConnectionCode)}
+                >
+                  <Code className="mr-2 h-4 w-4" />
+                  {showConnectionCode ? "Hide" : "Show"} Connection Code
+                </Button>
+              )}
+              
+              {showConnectionCode && signalData && (
+                <div className="mt-4 bg-white p-4 rounded-lg border border-rose-200">
+                  <p className="text-sm text-rose-500 mb-2">Your connection code:</p>
+                  <div className="flex gap-2">
+                    <Input 
+                      value={signalData} 
+                      readOnly 
+                      className="text-xs font-mono border-rose-200"
+                    />
+                    <Button 
+                      onClick={copyConnectionCode}
+                      variant="secondary"
+                      className="bg-rose-100 hover:bg-rose-200 text-rose-600"
+                    >
+                      Copy
+                    </Button>
+                  </div>
+                  
+                  <div className="mt-4">
+                    <p className="text-sm text-rose-500 mb-2">Enter partner's code:</p>
+                    <div className="flex gap-2">
+                      <Textarea 
+                        value={manualSignal}
+                        onChange={(e) => setManualSignal(e.target.value)}
+                        placeholder="Paste your partner's connection code here"
+                        className="text-xs font-mono h-20 border-rose-200"
+                      />
+                    </div>
+                    <Button 
+                      onClick={handleManualConnect}
+                      className="mt-2 w-full bg-gradient-to-r from-pink-400 to-rose-500 hover:opacity-90"
+                    >
+                      Connect Manually
+                    </Button>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         )}
