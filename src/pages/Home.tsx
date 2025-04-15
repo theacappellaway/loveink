@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -12,14 +11,9 @@ import { useToast } from '@/hooks/use-toast';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 
-// Define the authorized emails and password
-const AUTHORIZED_EMAILS = [
-  'your-email@example.com',  // Replace with your actual email
-  'gf-email@example.com'     // Replace with your girlfriend's actual email
-];
-
-// Hardcoded password - in production this should be stored securely
-const SECRET_PASSWORD = 'love2025'; // Replace with your actual password
+// Get authorized emails and password from environment variables
+const AUTHORIZED_EMAILS = JSON.parse(import.meta.env.VITE_AUTHORIZED_EMAILS || '[]');
+const SECRET_PASSWORD = import.meta.env.VITE_SECRET_PASSWORD || '';
 
 const formSchema = z.object({
   email: z.string().email()
