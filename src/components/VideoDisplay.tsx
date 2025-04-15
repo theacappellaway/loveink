@@ -1,5 +1,5 @@
 
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import { cn } from '@/lib/utils';
 
 interface VideoDisplayProps {
@@ -16,10 +16,30 @@ const VideoDisplay = ({
   className 
 }: VideoDisplayProps) => {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (videoRef.current && stream) {
-      videoRef.current.srcObject = stream;
+      try {
+        videoRef.current.srcObject = stream;
+        
+        // Add error handling for video element
+        const handleVideoError = (e: Event) => {
+          console.error('Video error:', e);
+          setError('Failed to display video stream');
+        };
+        
+        videoRef.current.addEventListener('error', handleVideoError);
+        
+        return () => {
+          if (videoRef.current) {
+            videoRef.current.removeEventListener('error', handleVideoError);
+          }
+        };
+      } catch (err) {
+        console.error('Error setting video stream:', err);
+        setError(err instanceof Error ? err.message : 'Unknown video error');
+      }
     }
   }, [stream]);
 
@@ -28,7 +48,11 @@ const VideoDisplay = ({
       "relative rounded-lg overflow-hidden bg-black/5", 
       className
     )}>
-      {stream ? (
+      {error ? (
+        <div className="absolute inset-0 flex items-center justify-center bg-duet-dark/10">
+          <div className="text-destructive text-sm">Error: {error}</div>
+        </div>
+      ) : stream ? (
         <video
           ref={videoRef}
           autoPlay

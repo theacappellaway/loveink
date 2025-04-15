@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -15,6 +16,12 @@
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:site" content="@lovable_dev" />
     <meta name="twitter:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
+    
+    <!-- Global polyfill for simple-peer and other Node.js libraries -->
+    <script>
+      window.global = window;
+      window.process = { env: { DEBUG: undefined } };
+    </script>
   </head>
 
   <body>
