@@ -30,6 +30,14 @@ const VideoChat: React.FC = () => {
     initializePeer
   } = useVideoChat();
 
+  // Check authorization
+  useEffect(() => {
+    const authorizedEmail = sessionStorage.getItem('duet_authorized_email');
+    if (!authorizedEmail) {
+      navigate('/');
+    }
+  }, [navigate]);
+
   // Initialize peer connection when necessary
   useEffect(() => {
     if (roomId) {
